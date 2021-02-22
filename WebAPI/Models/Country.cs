@@ -17,8 +17,8 @@ namespace WebAPI.Models
         [StringLength(50)]
         public string Name { get; set; }
 
-        //[Column("Population")]
-        //[Required]
-        //public Int64 Population { get; set; }
+        [Column("Population")]
+        [Required]
+        public Int64 Population { get; set; }
     }
 }
