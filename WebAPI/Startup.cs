@@ -10,9 +10,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+using WebAPI.Data;
 using WebAPI.Swagger;
 
 namespace WebAPI
@@ -29,6 +31,12 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //DataBase
+            services.AddControllersWithViews();
+            services.AddDbContext<DataContext>
+            (o => o.UseSqlServer(Configuration.
+                GetConnectionString("EmployeeAppCon")));
+
             //Enable CORS
             services.AddCors(c =>
             {
@@ -52,7 +60,7 @@ namespace WebAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext db)
         {
             //Configure Swagger
             ConfigSwagger(app);
@@ -63,6 +71,9 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //Create DataBase first approche
+            //db.Database.EnsureCreated();
 
             app.UseRouting();
 
