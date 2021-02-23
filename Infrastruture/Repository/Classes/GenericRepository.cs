@@ -4,47 +4,46 @@ using System.Linq;
 using System.Text;
 using DataMapping.DataContext;
 using Infrastruture.Repository.Interfaces;
+using Infrastruture.UnitOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastruture.Repository.Classes
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly DataDbContext _DataContext;
-        private readonly DbSet<T> _DbSet;
+        private readonly IGenericUnitOfWork _unitOfWork;
 
-        public GenericRepository(DataDbContext context)
+        public GenericRepository(IGenericUnitOfWork unitOfWork)
         {
-            _DataContext = context;
-            _DbSet = _DataContext.Set<T>();
-
+            _unitOfWork = unitOfWork;
         }
         public IEnumerable<T> GetAll()
         {
-            return _DbSet.ToList();
+            return _unitOfWork.Set<T>();
         }
 
         public T GetById(int id)
         {
-            return _DbSet.Find(id);
+            return _unitOfWork.Set<T>().Find(id);
         }
 
         public void Add(T entity)
         {
-            _DbSet.Add(entity);
+            _unitOfWork.Set<T>().Add(entity);
         }
 
         public void Update(T entity)
         {
-            _DbSet.Attach(entity);
-            _DataContext.Entry(entity).State = EntityState.Modified;
+            _unitOfWork.Set<T>().Attach(entity);
+            //_DataContext.Entry(entity).State = EntityState.Modified;
         }
 
         public void Delete(T entity)
         {
-            _DbSet.Remove(entity);
+            _unitOfWork.Set<T>().Remove(entity);
         }
 
+        #region IDisposable
         public void Dispose()
         {
             Dispose(true);
@@ -55,8 +54,11 @@ namespace Infrastruture.Repository.Classes
         {
             if (isdisposing)
             {
-               //_unitOfWork.Dispose();
+                _unitOfWork.Dispose();
             }
         }
+
+        #endregion
+
     }
 }

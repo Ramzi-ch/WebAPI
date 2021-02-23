@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using DataMapping.Models;
+using Infrastruture.Repository.Interfaces;
 
 namespace WebAPI.Controllers
 {
@@ -20,32 +21,26 @@ namespace WebAPI.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
+        private readonly IGenericRepository<Employee> _empRepository;
 
-        public EmployeeController(IConfiguration configuration, IWebHostEnvironment env)
+        public EmployeeController(IConfiguration configuration, IWebHostEnvironment env, IGenericRepository<Employee> empRepository)
         {
             _configuration = configuration;
             _env = env;
+            _empRepository = empRepository;
         }
 
         [HttpGet]
         public JsonResult Get()
         {
-            string query = $"select * from dbo.Employee";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-            return new JsonResult(table);
+            return new JsonResult(_empRepository.GetAll());
+        }
+
+        [HttpGet]
+        [Route("GetEmployeeById/id")]
+        public JsonResult GetEmployeeById(int id)
+        {
+            return new JsonResult(_empRepository.GetById(id));
         }
 
         [HttpPost]
@@ -157,5 +152,7 @@ namespace WebAPI.Controllers
             }
             return new JsonResult(table);
         }
+
+        
     }
 }
