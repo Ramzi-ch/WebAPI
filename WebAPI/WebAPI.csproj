@@ -25,6 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataMapping\DataMapping.csproj" />
+    <ProjectReference Include="..\Infrastruture\Infrastruture.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Photos\anonymous.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

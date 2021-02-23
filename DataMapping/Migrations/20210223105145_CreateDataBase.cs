@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace WebAPI.Migrations
+namespace DataMapping.Migrations
 {
     public partial class CreateDataBase : Migration
     {
@@ -68,7 +68,8 @@ namespace WebAPI.Migrations
                 values: new object[,]
                 {
                     { 1, "Sfax", 1000L },
-                    { 2, "Sousse", 1000L }
+                    { 2, "Sousse", 1000L },
+                    { 3, "Gabes", 1200L }
                 });
 
             migrationBuilder.InsertData(
@@ -76,13 +77,13 @@ namespace WebAPI.Migrations
                 columns: new[] { "DepartmentId", "DepartmentName" },
                 values: new object[,]
                 {
-                    { 1, ".Net" },
-                    { 2, "NodeJs" },
-                    { 3, "Flutter" },
-                    { 4, "React" },
+                    { 7, "RH" },
                     { 5, "WordPress" },
+                    { 4, "React" },
                     { 6, "Prestashop" },
-                    { 7, "RH" }
+                    { 2, "NodeJs" },
+                    { 1, ".Net" },
+                    { 3, "Flutter" }
                 });
 
             migrationBuilder.InsertData(
@@ -90,12 +91,12 @@ namespace WebAPI.Migrations
                 columns: new[] { "EmployeeId", "CountryID", "DateOfJoining", "DepartmentId", "EmployeeName", "PhotoFileName" },
                 values: new object[,]
                 {
+                    { 6, null, null, null, "Haitham", null },
                     { 1, null, null, null, "Sofien", null },
                     { 2, null, null, null, "Ahmed", null },
                     { 3, null, null, null, "Khadija", null },
                     { 4, null, null, null, "Mahmoud", null },
                     { 5, null, null, null, "Majdi", null },
-                    { 6, null, null, null, "Haitham", null },
                     { 7, null, null, null, "Maryam", null }
                 });
 

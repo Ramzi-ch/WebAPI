@@ -14,7 +14,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-using WebAPI.Data;
+using DataMapping.DataContext;
+using DataMapping.Models;
+using Infrastruture.Repository.Classes;
+using Infrastruture.Repository.Interfaces;
 using WebAPI.Swagger;
 
 namespace WebAPI
@@ -31,9 +34,10 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IGenericRepository<Employee>, GenericRepository<Employee>>();
             //DataBase
             services.AddControllersWithViews();
-            services.AddDbContext<DataContext>
+            services.AddDbContext<DataDbContext>
             (o => o.UseSqlServer(Configuration.
                 GetConnectionString("EmployeeAppCon")));
 
@@ -60,7 +64,7 @@ namespace WebAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext db)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataDbContext db)
         {
             //Configure Swagger
             ConfigSwagger(app);

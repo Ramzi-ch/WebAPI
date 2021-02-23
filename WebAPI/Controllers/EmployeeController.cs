@@ -10,7 +10,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using WebAPI.Models;
+using DataMapping.Models;
 
 namespace WebAPI.Controllers
 {

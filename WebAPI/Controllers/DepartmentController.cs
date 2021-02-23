@@ -7,7 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using WebAPI.Models;
+using DataMapping.Models;
 
 namespace WebAPI.Controllers
 {

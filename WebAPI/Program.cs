@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using WebAPI.Data;
+using DataMapping.DataContext;
 
 namespace WebAPI
 {
@@ -21,7 +21,7 @@ namespace WebAPI
             {
                 try
                 {
-                    var context = scope.ServiceProvider.GetService<DataContext>();
+                    var context = scope.ServiceProvider.GetService<DataDbContext>();
                     //context.Database.EnsureDeleted();
                     context.Database.Migrate();
                 }

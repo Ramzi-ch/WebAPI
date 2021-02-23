@@ -1,15 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WebAPI.Models;
+﻿using DataMapping.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace WebAPI.Data
+namespace DataMapping.DataContext
 {
-    public class DataContext : DbContext
+    public class DataDbContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
@@ -26,6 +22,8 @@ namespace WebAPI.Data
             LoadEmployeeData(modelBuilder);
         }
 
+        #region Load Some Data Into DB
+
         private void LoadCountryData(ModelBuilder modelBuilder)
         {
             //Insert data in Country table
@@ -39,6 +37,11 @@ namespace WebAPI.Data
                 CountryId = 2,
                 Name = "Sousse",
                 Population = 1000
+            }, new Country
+            {
+                CountryId = 3,
+                Name = "Gabes",
+                Population = 1200
             });
         }
 
@@ -108,5 +111,8 @@ namespace WebAPI.Data
                 EmployeeName = "Maryam"
             });
         }
+
+        #endregion
+        
     }
 }
