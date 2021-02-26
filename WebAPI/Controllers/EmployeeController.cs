@@ -46,66 +46,21 @@ namespace WebAPI.Controllers
         [HttpPost]
         public JsonResult Post(Employee emp)
         {
-            string query = $"insert into dbo.Employee (EmployeeName,Department,DateOfJoining,PhotoFileName)" +
-                           $"values ('{emp.EmployeeName}', '{emp.Department}','{emp.DateOfJoining}','{emp.PhotoFileName}')";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
+            _empRepository.Add(emp);
             return new JsonResult("Added successfully");
         }
 
         [HttpPut]
         public JsonResult Put(Employee emp)
         {
-            string query = $"update dbo.Employee set EmployeeName = '{emp.EmployeeName}', Department = '{emp.Department}'," +
-                           $"DateOfJoining = '{emp.DateOfJoining}', PhotoFileName = '{emp.PhotoFileName}'" +
-                           $"where EmployeeId = {emp.EmployeeId}";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
+            _empRepository.Update(emp);
             return new JsonResult("Updated successfully");
         }
 
-        [HttpDelete, Route("{id}")]
-        public JsonResult Delete(int id)
+        [HttpDelete]
+        public JsonResult Delete(Employee emp)
         {
-            string query = $"delete from dbo.Employee where EmployeeId = {id}";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
+            _empRepository.Delete(emp);
             return new JsonResult("Deleted successfully");
         }
 
@@ -125,7 +80,7 @@ namespace WebAPI.Controllers
                 }
                 return new JsonResult(fileName);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new JsonResult("anonymous.png");
             }

@@ -29,18 +29,35 @@ namespace Infrastruture.Repository.Classes
 
         public void Add(T entity)
         {
-            _unitOfWork.Set<T>().Add(entity);
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+            var data=_unitOfWork.Set<T>().Add(entity);
+            data.State = EntityState.Added;
+            _unitOfWork.Commit();
         }
 
         public void Update(T entity)
         {
-            _unitOfWork.Set<T>().Attach(entity);
-            //_DataContext.Entry(entity).State = EntityState.Modified;
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+            var data = _unitOfWork.Set<T>().Attach(entity);
+            data.State = EntityState.Modified;
+            _unitOfWork.Commit();
         }
 
         public void Delete(T entity)
         {
-            _unitOfWork.Set<T>().Remove(entity);
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+            var data = _unitOfWork.Set<T>().Remove(entity);
+            data.State = EntityState.Deleted;
+            _unitOfWork.Commit();
         }
 
         #region IDisposable

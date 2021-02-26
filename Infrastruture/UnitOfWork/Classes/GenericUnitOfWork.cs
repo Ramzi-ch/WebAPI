@@ -16,12 +16,22 @@ namespace Infrastruture.UnitOfWork.Classes
         {
             _dataContext = context;
         }
-        
+
+        public DataDbContext GetContext()
+        {
+            return _dataContext;
+        }
+
         public DbSet<T> Set<T>() where T : class
         {
             return _dataContext.Set<T>();
         }
-        public async Task Commit()
+
+        public void Commit()
+        {
+            _dataContext.SaveChanges();
+        }
+        public async Task CommitAsync()
         {
             await _dataContext.SaveChangesAsync();
         }
