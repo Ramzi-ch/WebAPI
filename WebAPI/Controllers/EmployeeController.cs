@@ -12,57 +12,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using DataMapping.Models;
 using Infrastruture.Repository.Interfaces;
+using WebAPI.Controllers.BaseController;
 
 namespace WebAPI.Controllers
 {
     [Route("api/employee")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class EmployeeController : BaseController<Employee>
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        private readonly IGenericRepository<Employee> _empRepository;
 
-        public EmployeeController(IConfiguration configuration, IWebHostEnvironment env, IGenericRepository<Employee> empRepository)
+        public EmployeeController(IConfiguration configuration, IWebHostEnvironment env,IGenericRepository<Employee> empRepository) : base(empRepository)
         {
             _configuration = configuration;
             _env = env;
-            _empRepository = empRepository;
         }
 
-        [HttpGet]
-        public JsonResult Get()
-        {
-            return new JsonResult(_empRepository.GetAll());
-        }
-
-        [HttpGet]
-        [Route("GetEmployeeById/id")]
-        public JsonResult GetEmployeeById(int id)
-        {
-            return new JsonResult(_empRepository.GetById(id));
-        }
-
-        [HttpPost]
-        public JsonResult Post(Employee emp)
-        {
-            _empRepository.Add(emp);
-            return new JsonResult("Added successfully");
-        }
-
-        [HttpPut]
-        public JsonResult Put(Employee emp)
-        {
-            _empRepository.Update(emp);
-            return new JsonResult("Updated successfully");
-        }
-
-        [HttpDelete]
-        public JsonResult Delete(Employee emp)
-        {
-            _empRepository.Delete(emp);
-            return new JsonResult("Deleted successfully");
-        }
 
         [HttpPost]
         [Route("SaveFile")]
