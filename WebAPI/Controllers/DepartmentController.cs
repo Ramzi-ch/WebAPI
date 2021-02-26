@@ -17,8 +17,17 @@ namespace WebAPI.Controllers
     [ApiController]
     public class DepartmentController : BaseController<Department>
     {
+        private readonly IGenericRepository<Department> _depRepository;
         public DepartmentController(IGenericRepository<Department> depRepository) : base(depRepository)
         {
+            _depRepository = depRepository;
+        }
+
+        [HttpGet]
+        [Route("GetAllDepartmentNames")]
+        public JsonResult GetAllDepartmentNames()
+        {
+            return new JsonResult(_depRepository.GetWithSpeceficColumns(x => new { x.DepartmentName }));
         }
 
     }

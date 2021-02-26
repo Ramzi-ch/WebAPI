@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using DataMapping.DataContext;
 using Infrastruture.Repository.Interfaces;
@@ -58,6 +59,11 @@ namespace Infrastruture.Repository.Classes
             var data = _unitOfWork.Set<T>().Remove(entity);
             data.State = EntityState.Deleted;
             _unitOfWork.Commit();
+        }
+        
+        public IEnumerable<TResult> GetWithSpeceficColumns<TResult>(Expression<Func<T, TResult>> objectToSave) where TResult : class
+        {
+            return _unitOfWork.Set<T>().Select(objectToSave);
         }
 
         #region IDisposable

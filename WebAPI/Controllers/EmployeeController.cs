@@ -20,15 +20,22 @@ namespace WebAPI.Controllers
     [ApiController]
     public class EmployeeController : BaseController<Employee>
     {
-        private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
+        private readonly IGenericRepository<Employee> _empRepository;
 
-        public EmployeeController(IConfiguration configuration, IWebHostEnvironment env,IGenericRepository<Employee> empRepository) : base(empRepository)
+        public EmployeeController(IWebHostEnvironment env,
+            IGenericRepository<Employee> empRepository) : base(empRepository)
         {
-            _configuration = configuration;
             _env = env;
+            _empRepository = empRepository;
         }
 
+        [HttpGet]
+        [Route("GetAllEmployeeNames")]
+        public JsonResult GetAllEmployeeNames()
+        {
+            return new JsonResult(_empRepository.GetWithSpeceficColumns(x => new { x.EmployeeName, x.DateOfJoining }));
+        }
 
         [HttpPost]
         [Route("SaveFile")]
@@ -51,29 +58,5 @@ namespace WebAPI.Controllers
                 return new JsonResult("anonymous.png");
             }
         }
-
-        [HttpGet]
-        [Route("GetAllDepartmentNames")]
-        public JsonResult GetAllDepartmentNames()
-        {
-            string query = $"select DepartmentName from dbo.Department";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("EmployeeAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-            return new JsonResult(table);
-        }
-
-        
     }
 }
