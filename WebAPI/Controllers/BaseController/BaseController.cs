@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Infrastruture.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.Controllers.BaseController
 {
@@ -18,6 +19,7 @@ namespace WebAPI.Controllers.BaseController
         }
 
         [HttpGet]
+        //[Authorize(Policy = "PublicSecure")] //identity server with separate project
         public virtual JsonResult Get()
         {
             return new JsonResult(_repository.GetAll());

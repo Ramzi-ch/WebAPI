@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -20,7 +21,10 @@ using Infrastruture.Repository.Classes;
 using Infrastruture.Repository.Interfaces;
 using Infrastruture.UnitOfWork.Classes;
 using Infrastruture.UnitOfWork.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using WebAPI.AppIocDi;
+using WebAPI.Jwt;
 using WebAPI.Swagger;
 
 namespace WebAPI
@@ -59,8 +63,67 @@ namespace WebAPI
             //Enable JSON Serialization
             JSONSerializer(services);
 
+            //Jwt
+            JwtSettings jwtSettings = new JwtSettings();
+            Configuration.Bind(nameof(jwtSettings), jwtSettings);
+            services.AddSingleton(jwtSettings);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                
+            }).AddJwtBearer(x =>
+            {
+                x.SaveToken = true;
+                x.TokenValidationParameters=new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true
+
+                };
+            });
+
             //Configure Swagger launch page
-            services.AddSwaggerGen(x => { x.SwaggerDoc("v1",new OpenApiInfo{Title = "WebAPI",Version = "v1"});});
+            services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("v1",new OpenApiInfo{Title = "WebAPI",Version = "v1"});
+                var security = new Dictionary<string, IEnumerable<string>>
+                {
+                    {"Bearer", new string[0] }
+                };
+
+                x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Description = "JWT Authorization header using the bearer scheme",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                x.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme
+                                }
+                            }, 
+                        new List<string>()
+                    }
+                });
+            });
+
+            //Use Identity Server with separate project
+            //IdentityServer(services);
+
             services.AddControllers();
         }
 
@@ -82,6 +145,9 @@ namespace WebAPI
 
             app.UseRouting();
 
+            //Use Identity Server with separate project
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -98,7 +164,7 @@ namespace WebAPI
             });
         }
 
-
+        #region Private method
         private void JSONSerializer(IServiceCollection services)
         {
             //To enable JSON Serialization
@@ -115,5 +181,26 @@ namespace WebAPI
             app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
             app.UseSwaggerUI(option => { option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description); });
         }
+
+        //Use Identity Server with separate project
+        private void IdentityServer(IServiceCollection services)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                o.Authority = "https://localhost:44308";
+                o.Audience = "myresourceapi";
+                o.RequireHttpsMetadata = false;
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("PublicSecure", policy => policy.RequireClaim("client_id", "secret_client_id"));
+            });
+        }
+        #endregion
+
     }
 }
