@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataMapping.Models
@@ -10,10 +11,11 @@ namespace DataMapping.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         public int DepartmentId { get; set; }
-
         [Column("DepartmentName")]
         [Required]
         [StringLength(50)]
         public string DepartmentName { get; set; }
+
+        public ICollection<Employee> Employee { get; set; }
     }
 }

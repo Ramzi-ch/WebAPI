@@ -84,7 +84,8 @@ namespace DataMapping.DataContext
             modelBuilder.Entity<Employee>().HasData(new Employee
             {
                 EmployeeId = 1,
-                EmployeeName = "Sofien"
+                EmployeeName = "Sofien",
+                DepartmentId = 1
             }, new Employee
             {
                 EmployeeId = 2,

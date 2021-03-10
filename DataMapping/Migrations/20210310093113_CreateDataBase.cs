@@ -40,7 +40,7 @@ namespace DataMapping.Migrations
                     EmployeeId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CountryID = table.Column<int>(type: "int", nullable: true),
+                    CountryId = table.Column<int>(type: "int", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: true),
                     DateOfJoining = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhotoFileName = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -49,8 +49,8 @@ namespace DataMapping.Migrations
                 {
                     table.PrimaryKey("PK_Employee", x => x.EmployeeId);
                     table.ForeignKey(
-                        name: "FK_Employee_Country_CountryID",
-                        column: x => x.CountryID,
+                        name: "FK_Employee_Country_CountryId",
+                        column: x => x.CountryId,
                         principalTable: "Country",
                         principalColumn: "CountryId",
                         onDelete: ReferentialAction.Restrict);
@@ -77,33 +77,37 @@ namespace DataMapping.Migrations
                 columns: new[] { "DepartmentId", "DepartmentName" },
                 values: new object[,]
                 {
-                    { 7, "RH" },
-                    { 5, "WordPress" },
-                    { 4, "React" },
-                    { 6, "Prestashop" },
-                    { 2, "NodeJs" },
                     { 1, ".Net" },
-                    { 3, "Flutter" }
+                    { 2, "NodeJs" },
+                    { 3, "Flutter" },
+                    { 4, "React" },
+                    { 5, "WordPress" },
+                    { 6, "Prestashop" },
+                    { 7, "RH" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Employee",
-                columns: new[] { "EmployeeId", "CountryID", "DateOfJoining", "DepartmentId", "EmployeeName", "PhotoFileName" },
+                columns: new[] { "EmployeeId", "CountryId", "DateOfJoining", "DepartmentId", "EmployeeName", "PhotoFileName" },
                 values: new object[,]
                 {
-                    { 6, null, null, null, "Haitham", null },
-                    { 1, null, null, null, "Sofien", null },
                     { 2, null, null, null, "Ahmed", null },
                     { 3, null, null, null, "Khadija", null },
                     { 4, null, null, null, "Mahmoud", null },
                     { 5, null, null, null, "Majdi", null },
+                    { 6, null, null, null, "Haitham", null },
                     { 7, null, null, null, "Maryam", null }
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Employee_CountryID",
+            migrationBuilder.InsertData(
                 table: "Employee",
-                column: "CountryID");
+                columns: new[] { "EmployeeId", "CountryId", "DateOfJoining", "DepartmentId", "EmployeeName", "PhotoFileName" },
+                values: new object[] { 1, null, null, 1, "Sofien", null });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employee_CountryId",
+                table: "Employee",
+                column: "CountryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employee_DepartmentId",

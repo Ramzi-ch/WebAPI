@@ -4,16 +4,14 @@ using DataMapping.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataMapping.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    [Migration("20210223105145_CreateDataBase")]
-    partial class CreateDataBase
+    partial class DataDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,7 +126,7 @@ namespace DataMapping.Migrations
                         .HasColumnName("EmployeeId")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CountryID")
+                    b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
                     b.Property<string>("DateOfJoining")
@@ -148,7 +146,7 @@ namespace DataMapping.Migrations
 
                     b.HasKey("EmployeeId");
 
-                    b.HasIndex("CountryID");
+                    b.HasIndex("CountryId");
 
                     b.HasIndex("DepartmentId");
 
@@ -158,6 +156,7 @@ namespace DataMapping.Migrations
                         new
                         {
                             EmployeeId = 1,
+                            DepartmentId = 1,
                             EmployeeName = "Sofien"
                         },
                         new
@@ -196,15 +195,20 @@ namespace DataMapping.Migrations
                 {
                     b.HasOne("DataMapping.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CountryID");
+                        .HasForeignKey("CountryId");
 
                     b.HasOne("DataMapping.Models.Department", "Department")
-                        .WithMany()
+                        .WithMany("Employee")
                         .HasForeignKey("DepartmentId");
 
                     b.Navigation("Country");
 
                     b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("DataMapping.Models.Department", b =>
+                {
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }
