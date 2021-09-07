@@ -125,6 +125,14 @@ namespace WebAPI
             //IdentityServer(services);
 
             services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy",
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -154,7 +162,7 @@ namespace WebAPI
             {
                 endpoints.MapControllers();
             });
-
+            app.UseCors("MyPolicy");
             //for photos
             app.UseStaticFiles(new StaticFileOptions
             {
